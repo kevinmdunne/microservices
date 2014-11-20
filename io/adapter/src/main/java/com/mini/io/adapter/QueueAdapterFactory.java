@@ -9,7 +9,7 @@ public class QueueAdapterFactory {
 
 	private static QueueAdapterFactory INSTANCE;
 	
-	public QueueAdapterFactory getInstance(){
+	public static QueueAdapterFactory getInstance(){
 		if(INSTANCE == null){
 			INSTANCE  = new QueueAdapterFactory();
 		}
