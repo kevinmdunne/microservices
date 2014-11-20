@@ -1,4 +1,4 @@
-package com.mini.io.data;
+package com.mini.data;
 
 public class MicroserviceRequest extends MicroservicePacket{
 

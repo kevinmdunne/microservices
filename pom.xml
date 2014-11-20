@@ -11,7 +11,7 @@
     <modules>
         <module>microservice</module>
         <module>io</module>
-    <module>data</module>
+		<module>data</module>
   </modules>
 
 </project>

@@ -1,4 +1,4 @@
-package com.mini.io.utils;
+package com.mini.utils;
 
 import java.util.UUID;
 

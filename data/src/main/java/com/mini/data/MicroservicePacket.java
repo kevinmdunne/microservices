@@ -1,6 +1,6 @@
-package com.mini.io.data;
+package com.mini.data;
 
-import com.mini.io.utils.UUIDGenerator;
+import com.mini.utils.UUIDGenerator;
 
 public class MicroservicePacket {
 
