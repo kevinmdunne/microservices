@@ -10,4 +10,8 @@ public interface IQueueAdapter {
 	public MicroservicePacket recieve() throws QueueException;
 	
 	public MicroservicePacket recieve(long timeout) throws QueueException;
+	
+	public void connect() throws QueueException;
+	
+	public void disconnect() throws QueueException;
 }

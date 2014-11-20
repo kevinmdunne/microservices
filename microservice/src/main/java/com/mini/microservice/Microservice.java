@@ -10,4 +10,6 @@ public interface Microservice {
 	public void stop() throws InfastructureException;
 	
 	public void execute() throws ServiceExecutionException;
+	
+	public String getID();
 }
