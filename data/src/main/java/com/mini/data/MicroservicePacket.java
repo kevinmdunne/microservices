@@ -1,9 +1,13 @@
 package com.mini.data;
 
+import java.io.Serializable;
+
 import com.mini.utils.UUIDGenerator;
 
-public class MicroservicePacket {
+public class MicroservicePacket implements Serializable{
 
+	private static final long serialVersionUID = -3078668681474484520L;
+	
 	private Object payload;
 	private String packetID;
 	private String correlationID;
