@@ -30,7 +30,7 @@ public class ActiveMQAdapter extends QueueAdapter{
 
 	@Override
 	public void connect() throws QueueException {
-		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(this.queueMetaData.getQueueURL());
+		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(this.queueMetaData.getQueueURL() + "?jms.prefetchPolicy.queuePrefetch=0");
 		try{
 			this.connection = connectionFactory.createConnection();
 			connection.start();
