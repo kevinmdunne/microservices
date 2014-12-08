@@ -1,5 +1,6 @@
 package com.mini.microservice;
 
+import com.mini.data.MicroserviceRequest;
 import com.mini.exception.ServiceExecutionException;
 import com.mini.exception.InfastructureException;
 
@@ -9,7 +10,7 @@ public interface Microservice {
 	
 	public void stop() throws InfastructureException;
 	
-	public void execute() throws ServiceExecutionException;
+	public void execute(MicroserviceRequest request) throws ServiceExecutionException;
 	
 	public String getID();
 }
