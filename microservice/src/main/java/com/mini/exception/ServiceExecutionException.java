@@ -2,6 +2,13 @@ package com.mini.exception;
 
 public class ServiceExecutionException extends Exception{
 
-	private static final long serialVersionUID = 7886536376559326207L;
+	private static final long serialVersionUID = 536971435963225593L;
 
+	public ServiceExecutionException(){
+		
+	}
+	
+	public ServiceExecutionException(Exception cause){
+		super(cause);
+	}
 }

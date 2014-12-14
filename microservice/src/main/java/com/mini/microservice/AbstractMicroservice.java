@@ -2,6 +2,7 @@ package com.mini.microservice;
 
 import com.mini.data.MicroservicePacket;
 import com.mini.data.MicroserviceRequest;
+import com.mini.data.MicroserviceResponse;
 import com.mini.exception.InfastructureException;
 import com.mini.exception.ServiceExecutionException;
 import com.mini.io.adapter.IQueueAdapter;
@@ -14,6 +15,10 @@ public abstract class AbstractMicroservice implements Microservice{
 	
 	public AbstractMicroservice(IQueueAdapter queueAdapter){
 		this.queueAdapter = queueAdapter;
+	}
+	
+	protected void sendResponse(MicroserviceResponse response) throws QueueException{
+		this.queueAdapter.push(response);
 	}
 	
 	@Override

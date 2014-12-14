@@ -18,6 +18,7 @@
         <module>adapter</module>
         <module>activemq</module>
 		<module>rabbitmq</module>
+		<module>dummy</module>
   </modules>
 
 </project>
