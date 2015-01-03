@@ -2,6 +2,7 @@ package com.mini.io.adapter;
 
 import com.mini.data.MicroservicePacket;
 import com.mini.io.exception.QueueException;
+import com.mini.io.metadata.QueueMetaData;
 
 public interface IQueueAdapter {
 
@@ -14,4 +15,6 @@ public interface IQueueAdapter {
 	public void connect() throws QueueException;
 	
 	public void disconnect() throws QueueException;
+	
+	public QueueMetaData getQueueMetaData();
 }

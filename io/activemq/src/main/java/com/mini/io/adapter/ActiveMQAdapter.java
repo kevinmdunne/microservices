@@ -108,9 +108,12 @@ public class ActiveMQAdapter extends QueueAdapter{
 				this.createMessageConsumer();
 			}
 			
-			Message message = consumer.receive(timeout);			
-			ObjectMessage objectMessage = (ObjectMessage)message;
-			return (MicroservicePacket)objectMessage.getObject();
+			Message message = consumer.receive(timeout);
+			if(message != null){
+				ObjectMessage objectMessage = (ObjectMessage)message;
+				return (MicroservicePacket)objectMessage.getObject();
+			}
+			return null;
 		}catch(JMSException e){
 			throw new QueueException(e);
 		}

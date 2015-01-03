@@ -10,4 +10,9 @@ public abstract class QueueAdapter implements IQueueAdapter{
 	public QueueAdapter(QueueMetaData queueMetaData){
 		this.queueMetaData = queueMetaData;
 	}
+	
+	@Override
+	public QueueMetaData getQueueMetaData(){
+		return this.queueMetaData;
+	}
 }
