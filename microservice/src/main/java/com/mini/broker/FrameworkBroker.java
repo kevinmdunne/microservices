@@ -30,13 +30,15 @@ public class FrameworkBroker implements ServiceRegistrationListener{
 	}
 
 	@Override
-	public void serviceRegistered(String serviceID, String queue) {
+	public void serviceRegistered(String serviceID, String queueName) {
 		System.out.println("Registered " + serviceID);
+		ServiceRegistry.getInstance().registerService(serviceID, queueName);
 	}
 
 	@Override
-	public void serviceDeregistered(String serviceID, String queue) {
-		// TODO Auto-generated method stub
+	public void serviceDeregistered(String serviceID, String queueName) {
+		System.out.println("Deregistered " + serviceID);
+		ServiceRegistry.getInstance().deregisterService(serviceID, queueName);
 	}
 	
 	public static void main(String[] args){

@@ -1,5 +1,6 @@
 package com.mini.microservice;
 
+import com.mini.data.MicroserviceDeregistration;
 import com.mini.data.MicroservicePacket;
 import com.mini.data.MicroserviceRegistration;
 import com.mini.data.MicroserviceRequest;
@@ -41,6 +42,7 @@ public abstract class AbstractMicroservice implements Microservice{
 	@Override
 	public void stop() throws InfastructureException {
 		try{
+			this.deregister();
 			this.runner.stop();
 			this.queueAdapter.disconnect();
 		}catch(QueueException e){
@@ -54,6 +56,22 @@ public abstract class AbstractMicroservice implements Microservice{
 			QueueAdapterFactory factory = QueueAdapterFactory.getInstance();
 			QueueAdapter queueAdapter = factory.createAdapter("com.mini.io.adapter.ActiveMQAdapter", queueData);
 			MicroserviceRegistration registrationPacket = new MicroserviceRegistration();
+			String[] data = {getID(),this.queueAdapter.getQueueMetaData().getQueueName()};
+			registrationPacket.setPayload(data);
+			queueAdapter.connect();
+			queueAdapter.push(registrationPacket);
+			queueAdapter.disconnect();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	private void deregister(){
+		try{
+			QueueMetaData queueData = new QueueMetaData(Microservice.SERVICE_REGISTRATION_QUEUE, this.queueAdapter.getQueueMetaData().getQueueURL());
+			QueueAdapterFactory factory = QueueAdapterFactory.getInstance();
+			QueueAdapter queueAdapter = factory.createAdapter("com.mini.io.adapter.ActiveMQAdapter", queueData);
+			MicroserviceDeregistration registrationPacket = new MicroserviceDeregistration();
 			String[] data = {getID(),this.queueAdapter.getQueueMetaData().getQueueName()};
 			registrationPacket.setPayload(data);
 			queueAdapter.connect();

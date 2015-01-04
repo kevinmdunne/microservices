@@ -3,6 +3,7 @@ package com.mini.broker;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mini.data.MicroserviceDeregistration;
 import com.mini.data.MicroservicePacket;
 import com.mini.data.MicroserviceRegistration;
 import com.mini.io.adapter.QueueAdapter;
@@ -51,6 +52,11 @@ public class ServiceRegistrationThread implements Runnable {
 						String[] data = (String[]) packet.getPayload();
 						for (ServiceRegistrationListener listener : listeners) {
 							listener.serviceRegistered(data[0], data[1]);
+						}
+					}else if(packet instanceof MicroserviceDeregistration){
+						String[] data = (String[]) packet.getPayload();
+						for (ServiceRegistrationListener listener : listeners) {
+							listener.serviceDeregistered(data[0], data[1]);
 						}
 					}
 				}
