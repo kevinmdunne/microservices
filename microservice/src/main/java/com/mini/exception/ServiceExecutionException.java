@@ -8,6 +8,10 @@ public class ServiceExecutionException extends Exception{
 		
 	}
 	
+	public ServiceExecutionException(String cause){
+		super(cause);
+	}
+	
 	public ServiceExecutionException(Exception cause){
 		super(cause);
 	}

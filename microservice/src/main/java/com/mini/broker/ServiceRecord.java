@@ -1,6 +1,7 @@
 package com.mini.broker;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class ServiceRecord {
@@ -9,6 +10,10 @@ public class ServiceRecord {
 
 	public ServiceRecord(){
 		map = new HashMap<String, Integer>();
+	}
+	
+	public boolean hasService(String serviceID){
+		return map.get(serviceID) != null;
 	}
 	
 	public void incrementServiceCount(String serviceID){
@@ -39,5 +44,15 @@ public class ServiceRecord {
 			return count.intValue();
 		}
 		return 0;
+	}
+	
+	public int getTotalServiceCount(){
+		int result = 0;
+		Iterator<Integer> values = map.values().iterator();
+		
+		while(values.hasNext()){
+			result = result + values.next().intValue();
+		}
+		return result;
 	}
 }

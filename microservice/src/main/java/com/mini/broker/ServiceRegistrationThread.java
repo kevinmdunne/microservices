@@ -6,7 +6,7 @@ import java.util.List;
 import com.mini.data.MicroserviceDeregistration;
 import com.mini.data.MicroservicePacket;
 import com.mini.data.MicroserviceRegistration;
-import com.mini.io.adapter.QueueAdapter;
+import com.mini.io.adapter.IQueueAdapter;
 import com.mini.io.exception.QueueException;
 import com.mini.listeners.ServiceRegistrationListener;
 
@@ -14,12 +14,12 @@ public class ServiceRegistrationThread implements Runnable {
 
 	private static final long TIMEOUT = 5000;
 
-	private QueueAdapter queueAdapter;
+	private IQueueAdapter queueAdapter;
 	private boolean running;
 
 	private List<ServiceRegistrationListener> listeners;
 
-	public ServiceRegistrationThread(QueueAdapter queueAdapter) {
+	public ServiceRegistrationThread(IQueueAdapter queueAdapter) {
 		this.queueAdapter = queueAdapter;
 		this.listeners = new ArrayList<ServiceRegistrationListener>();
 	}

@@ -113,6 +113,8 @@ public abstract class AbstractMicroservice implements Microservice{
 							}else{
 								getQueueAdapter().push(packet);
 							}
+						}else{
+							getQueueAdapter().push(packet);
 						}
 					}
 				}
