@@ -31,8 +31,8 @@ public abstract class AbstractMicroservice implements Microservice{
 		try{
 			this.queueAdapter.connect();
 			this.register();
-			ServiceRunnable runnable = new ServiceRunnable();
-			Thread thread = new Thread(runnable);
+			runner = new ServiceRunnable();
+			Thread thread = new Thread(runner);
 			thread.start();
 		}catch(QueueException e){
 			throw new InfastructureException(e);
