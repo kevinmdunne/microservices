@@ -40,5 +40,9 @@ public class RabbitMQAdapter extends QueueAdapter{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public void deleteQueue() {	
+	}
 
 }

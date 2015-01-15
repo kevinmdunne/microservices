@@ -10,7 +10,9 @@ import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
 
+import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.command.ActiveMQDestination;
 
 import com.mini.data.MicroservicePacket;
 import com.mini.io.exception.QueueException;
@@ -116,6 +118,15 @@ public class ActiveMQAdapter extends QueueAdapter{
 			return null;
 		}catch(JMSException e){
 			throw new QueueException(e);
+		}
+	}
+	
+	@Override
+	public void deleteQueue() {
+		try{
+			((ActiveMQConnection)this.connection).destroyDestination((ActiveMQDestination)this.destination);
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 }

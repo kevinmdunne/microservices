@@ -27,6 +27,11 @@ public class ServiceRegistrationThread implements Runnable {
 	public void addRegistrationListener(ServiceRegistrationListener listener) {
 		listeners.add(listener);
 	}
+	
+	public void removeRegistrationListener(ServiceRegistrationListener listener){
+		listeners.remove(listener);
+	}
+	
 	public void start(){
 		try{
 			this.queueAdapter.connect();

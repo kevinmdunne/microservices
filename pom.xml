@@ -12,6 +12,7 @@
         <module>microservice</module>
         <module>io</module>
 		<module>data</module>
+    <module>connection</module>
   </modules>
 
 </project>

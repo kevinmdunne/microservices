@@ -38,5 +38,10 @@ public class DummyQueueAdapter extends QueueAdapter{
 	public MicroservicePacket recieve(long arg0) throws QueueException {
 		return null;
 	}
+	
+	@Override
+	public void deleteQueue() {
+
+	}
 
 }

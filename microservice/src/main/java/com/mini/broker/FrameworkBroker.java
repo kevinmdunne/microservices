@@ -1,16 +1,30 @@
 package com.mini.broker;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.mini.data.MicroserviceConnectionRequest;
+import com.mini.data.MicroserviceResponse;
 import com.mini.io.adapter.IQueueAdapter;
 import com.mini.io.adapter.QueueAdapterFactory;
 import com.mini.io.exception.QueueCreationException;
 import com.mini.io.exception.QueueException;
 import com.mini.io.metadata.QueueMetaData;
+import com.mini.listeners.ConnectionRequestListener;
 import com.mini.listeners.ServiceRegistrationListener;
 import com.mini.microservice.Microservice;
+import com.mini.utils.UUIDGenerator;
 
-public class FrameworkBroker implements ServiceRegistrationListener{
+public class FrameworkBroker implements ServiceRegistrationListener, ConnectionRequestListener{
 
+	public static final String CONNECTION_QUEUE_NAME = "connection-requests";
+	
 	private String serverURL;
+	
+	private ServiceRegistrationThread registreationThread;
+	private ConnectionRequestThread connectionRequestThread;
+	private Map<String,RequestHandlerThread> connections;
+	private IQueueAdapter connectionRequestQueueAdapter;
 	
 	public FrameworkBroker(String URL){
 		this.serverURL = URL;
@@ -19,15 +33,28 @@ public class FrameworkBroker implements ServiceRegistrationListener{
 	
 	public void start(){
 		try{
+			connections = new HashMap<String, RequestHandlerThread>();
+			
 			QueueMetaData queueData = new QueueMetaData(Microservice.SERVICE_REGISTRATION_QUEUE, this.serverURL);
 			QueueAdapterFactory factory = QueueAdapterFactory.getInstance();
 			IQueueAdapter queueAdapter = factory.createAdapter("com.mini.io.adapter.ActiveMQAdapter", queueData);
-			ServiceRegistrationThread registreationThread = new ServiceRegistrationThread(queueAdapter);
+			this.registreationThread = new ServiceRegistrationThread(queueAdapter);
 			registreationThread.addRegistrationListener(this);
 			registreationThread.start();
+			
+			QueueMetaData queueData2 = new QueueMetaData(FrameworkBroker.CONNECTION_QUEUE_NAME, this.serverURL);
+			this.connectionRequestQueueAdapter = factory.createAdapter("com.mini.io.adapter.ActiveMQAdapter", queueData2);
+			this.connectionRequestThread = new ConnectionRequestThread(connectionRequestQueueAdapter);
+			connectionRequestThread.addListener(this);
+			connectionRequestThread.start();
 		}catch(QueueCreationException e){
 			e.printStackTrace();
 		}
+	}
+	
+	public void shutdown(){
+		this.registreationThread.stop();
+		this.connectionRequestThread.stop();
 	}
 
 	@Override
@@ -53,9 +80,27 @@ public class FrameworkBroker implements ServiceRegistrationListener{
 		ServiceRegistry.getInstance().deregisterService(serviceID, queueName);
 	}
 	
-	public RequestConnection createRequestConnection(){
-		RequestConnection connection = new RequestConnection(this);
-		return connection;
+	@Override
+	public void connectionRequested(MicroserviceConnectionRequest request) {
+		try{
+			String queueName = UUIDGenerator.generateID();
+			QueueMetaData queueData = new QueueMetaData(queueName, this.serverURL);
+			QueueAdapterFactory factory = QueueAdapterFactory.getInstance();
+			IQueueAdapter queueAdapter = factory.createAdapter("com.mini.io.adapter.ActiveMQAdapter", queueData);
+			RequestHandlerThread thread = new RequestHandlerThread(queueAdapter,this);
+			this.connections.put(queueName, thread);
+			thread.start();
+
+			MicroserviceResponse response = new MicroserviceResponse();
+			response.setCorrelationID(request.getCorrelationID());
+			response.setPayload(queueName);
+			connectionRequestQueueAdapter.push(response);
+			
+		}catch(QueueCreationException e){
+			e.printStackTrace();
+		}catch(QueueException e){
+			e.printStackTrace();
+		}
 	}
 	
 	public IQueueAdapter getServiceQueue(String serviceID){
