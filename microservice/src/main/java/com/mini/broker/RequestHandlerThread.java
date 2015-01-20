@@ -31,7 +31,13 @@ public class RequestHandlerThread implements Runnable{
 	}
 	
 	public void stop() {
-		this.running = false;
+		try{
+			this.running = false;
+			requestQueueAdapter.deleteQueue();
+			this.requestQueueAdapter.disconnect();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
@@ -51,7 +57,7 @@ public class RequestHandlerThread implements Runnable{
 					}
 				}
 			}
-			this.requestQueueAdapter.disconnect();
+
 		} catch (QueueException e) {
 			e.printStackTrace();
 		} catch(Exception e){

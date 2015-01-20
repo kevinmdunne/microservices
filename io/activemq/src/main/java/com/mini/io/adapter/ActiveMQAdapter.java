@@ -124,7 +124,17 @@ public class ActiveMQAdapter extends QueueAdapter{
 	@Override
 	public void deleteQueue() {
 		try{
+			if(this.consumer != null)
+				this.consumer.close();
+			if(this.producer != null)
+				this.producer.close();
+			
 			((ActiveMQConnection)this.connection).destroyDestination((ActiveMQDestination)this.destination);
+
+			if(this.session != null)
+				this.session.close();
+			if(this.connection != null)
+				this.connection.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}

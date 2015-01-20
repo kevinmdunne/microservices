@@ -1,10 +1,14 @@
 package com.mini.connection;
 
+import com.mini.data.MicroserviceConnectionClose;
 import com.mini.data.MicroservicePacket;
 import com.mini.data.MicroserviceRequest;
 import com.mini.data.MicroserviceResponse;
 import com.mini.io.adapter.IQueueAdapter;
+import com.mini.io.adapter.QueueAdapterFactory;
+import com.mini.io.exception.QueueCreationException;
 import com.mini.io.exception.QueueException;
+import com.mini.io.metadata.QueueMetaData;
 
 public class MicroServiceConnection {
 
@@ -38,8 +42,24 @@ public class MicroServiceConnection {
 	public void close(){
 		try{
 			this.queueAdapter.disconnect();
+			String queueName = this.queueAdapter.getQueueMetaData().getQueueName();
+			IQueueAdapter q = this.createRequestAdapter(MicroServiceConnectionFactory.CONNECTION_QUEUE_NAME);
+			MicroserviceConnectionClose packet = new MicroserviceConnectionClose();
+			packet.setPayload(queueName);
+			q.push(packet);
 		}catch(QueueException e){
 			e.printStackTrace();
+		}catch(QueueCreationException e){
+			e.printStackTrace();
 		}
+	}
+	
+	private IQueueAdapter createRequestAdapter(String queueName) throws QueueCreationException,QueueException{
+		String url = this.queueAdapter.getQueueMetaData().getQueueURL();
+		QueueMetaData queueData = new QueueMetaData(queueName, url);
+		QueueAdapterFactory factory = QueueAdapterFactory.getInstance();
+		IQueueAdapter queueAdapter = factory.createAdapter("com.mini.io.adapter.ActiveMQAdapter", queueData);
+		queueAdapter.connect();
+		return queueAdapter;
 	}
 }

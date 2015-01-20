@@ -3,6 +3,7 @@ package com.mini.broker;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.mini.data.MicroserviceConnectionClose;
 import com.mini.data.MicroserviceConnectionRequest;
 import com.mini.data.MicroserviceResponse;
 import com.mini.io.adapter.IQueueAdapter;
@@ -101,6 +102,14 @@ public class FrameworkBroker implements ServiceRegistrationListener, ConnectionR
 		}catch(QueueException e){
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public void connectionCloseRequested(MicroserviceConnectionClose request) {
+		String requestQueueName = request.getPayload().toString();
+		RequestHandlerThread thread = this.connections.get(requestQueueName);
+		thread.stop();
+		this.connections.remove(requestQueueName);
 	}
 	
 	public IQueueAdapter getServiceQueue(String serviceID){

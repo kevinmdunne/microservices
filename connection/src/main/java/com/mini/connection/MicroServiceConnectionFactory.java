@@ -46,6 +46,7 @@ public class MicroServiceConnectionFactory {
 				//not for us so put it back on the queue
 				queueAdapter.push(response);
 			}
+			queueAdapter.disconnect();
 		}catch(Exception e){
 			e.printStackTrace();
 		}

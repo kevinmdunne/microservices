@@ -3,6 +3,7 @@ package com.mini.broker;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mini.data.MicroserviceConnectionClose;
 import com.mini.data.MicroserviceConnectionRequest;
 import com.mini.data.MicroservicePacket;
 import com.mini.io.adapter.IQueueAdapter;
@@ -56,7 +57,12 @@ public class ConnectionRequestThread implements Runnable{
 						for (ConnectionRequestListener listener : listeners) {
 							listener.connectionRequested((MicroserviceConnectionRequest)packet);
 						}
-					}else{
+					}else if(packet instanceof MicroserviceConnectionClose){
+						for (ConnectionRequestListener listener : listeners) {
+							listener.connectionCloseRequested((MicroserviceConnectionClose)packet);
+						}	
+					}
+					else{
 						this.queueAdapter.push(packet);
 					}
 				}
