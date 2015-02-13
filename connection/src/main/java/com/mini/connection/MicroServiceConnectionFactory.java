@@ -23,6 +23,10 @@ public class MicroServiceConnectionFactory {
 	}
 	
 	public MicroServiceConnection createConnection(){
+		return createConnection("");
+	}
+	
+	public MicroServiceConnection createConnection(String name){
 		IQueueAdapter queueAdapter = null;
 		try{
 			QueueMetaData queueData = new QueueMetaData(CONNECTION_QUEUE_NAME, this.serverURL);
@@ -30,6 +34,7 @@ public class MicroServiceConnectionFactory {
 			queueAdapter = factory.createAdapter("com.mini.io.adapter.ActiveMQAdapter", queueData);
 			queueAdapter.connect();
 			MicroserviceConnectionRequest connectionRequest = new MicroserviceConnectionRequest();
+			connectionRequest.setPayload(name);
 			queueAdapter.push(connectionRequest);
 			
 			long starttime = System.currentTimeMillis();

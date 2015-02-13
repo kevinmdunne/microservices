@@ -2,6 +2,7 @@ package com.mini.broker;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 import com.mini.data.MicroserviceConnectionClose;
 import com.mini.data.MicroserviceConnectionRequest;
@@ -84,7 +85,13 @@ public class FrameworkBroker implements ServiceRegistrationListener, ConnectionR
 	@Override
 	public void connectionRequested(MicroserviceConnectionRequest request) {
 		try{
+			String queueNameAppender = request.getPayload().toString();
 			String queueName = UUIDGenerator.generateID();
+			
+			if(!queueNameAppender.isEmpty()){
+				queueName = queueName + "_" + queueNameAppender;
+			}
+			
 			QueueMetaData queueData = new QueueMetaData(queueName, this.serverURL);
 			QueueAdapterFactory factory = QueueAdapterFactory.getInstance();
 			IQueueAdapter queueAdapter = factory.createAdapter("com.mini.io.adapter.ActiveMQAdapter", queueData);
@@ -118,5 +125,11 @@ public class FrameworkBroker implements ServiceRegistrationListener, ConnectionR
 	
 	public static void main(String[] args){
 		FrameworkBroker broker = new FrameworkBroker("failover://tcp://localhost:61616");
+		
+		new Scanner(System.in).nextLine();
+		System.out.println("Stopping broker");
+		broker.shutdown();
+		
+		System.exit(0);
 	}
 }
